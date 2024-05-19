@@ -3,9 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#000000" />
-	<link rel="icon" href="/favicon.ico" />
-	<link rel="manifest" href="/manifest.json" />
+	<meta name="theme-color" content="#000000">
+	<link rel="icon" href="/favicon.ico">
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -20,15 +19,15 @@
 		<header class="header">
 			<div class="header__container">
 				<a class="header__logo" href="/">
-					<img class="header__logo-image" src="<%=require('../images/logo.svg')%>" alt="Film! logo" />
+					<img class="header__logo-image" src="<%=require('../images/logo.svg')%>" alt="Film! logo">
 				</a>
 				<button class="header__basket">
-					<span class="header__basket-counter">0</span>
+					<span class="header__basket-counter" data-element="basket" data-component="basket">0</span>
 				</button>
 			</div>
 		</header>
 
-		<main class="gallery"></main>
+		<main class="gallery" data-element="catalog" data-component="catalog"></main>
 	</div>
 
 	<div class="modal" id="modal-container">
@@ -110,7 +109,7 @@
 						</div>
 						<label class="order__field">
 							<span class="form__label modal__title">Адрес доставки</span>
-							<input class="form__input" type="text" placeholder="Введите адрес" />
+							<input class="form__input" type="text" placeholder="Введите адрес">
 						</label>
 					</div>
 					<div class="modal__actions">
@@ -244,7 +243,7 @@
 				</label>
 			</div>
 			<div class="modal__actions">
-				<button type="submit" disabled class="button">Оплатить</button>
+				<button type="submit" disabled class="button contacts__button">Оплатить</button>
 				<span class="form__errors"></span>
 			</div>
 		</form>
