@@ -133,7 +133,7 @@ export class AppState extends Model<IAppState> {
 - **Класс WebLarekAPI** - Класс для взаимодействия с сервером, наследуется от класса Api (реализация слоя Model). Методы класса используются для получения данных с сервера и предоставления данных в Presenter для отображения в компонентах (View)
 ```TypeScript
 export class WebLarekAPI extends Api implements IWebLarekAPI {
-    ////API_ORIGIN
+    //API_ORIGIN
     readonly cdn: string;
 
     constructor(cdn: string, baseUrl: string, options?: RequestInit)
