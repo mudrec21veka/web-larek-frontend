@@ -8,6 +8,11 @@ interface IPage {
     locked: boolean
 };
 
+/**
+ * Класс для управления элементами главной страницы, наследуется от класса Component (реализация слоя View).
+ * Класс используется для управления состоянием страницы и отображением товаров на странице
+ */
+
 export class Page extends Component<IPage> {
     protected _counter: HTMLSpanElement;
     protected _catalog: HTMLElement;
@@ -37,7 +42,7 @@ export class Page extends Component<IPage> {
         this.setText(this._counter, value)
     };
 
-    // блокирует страницу
+    //установка блокировки на странице
     set locked(value: boolean) {
         if (value)
             this._wrapper.classList.add('page__wrapper_locked')

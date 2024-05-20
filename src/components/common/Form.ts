@@ -26,7 +26,7 @@ export class Form<T> extends Component<IFormState> {
         })
     };
 
-    // изменение поля
+    // изменение поля в заказе
     protected onInputChange(field: keyof T, value: string) {
         this.events.emit(`order:change`, {
             field,
@@ -34,14 +34,17 @@ export class Form<T> extends Component<IFormState> {
         })
     };
 
+    //установка значения валидности
     set valid(value: boolean) {
         this._submit.disabled = !value
     };
 
+    //передача ошибок в форме
     set errors(value: string) {
         this.setText(this._errors, value)
     };
 
+    //отображение формы
     render(state: Partial<T> & IFormState) {
         const {valid, errors, ...inputs} = state;
         super.render({valid, errors});

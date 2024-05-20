@@ -24,7 +24,8 @@ export class Success extends Component<ISuccess> {
             else container.addEventListener('click', actions.onClick);
         }
     };
-
+    
+    //установка количества списанных синапсов
     set total(total: number) {
         this.setText(this._total, `Списано ${total} синапсов`)
     }

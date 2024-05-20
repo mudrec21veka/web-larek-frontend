@@ -35,6 +35,7 @@ export class Address extends Form<IAddressForm> {
         })
     };
 
+    //установка адреса заказа
     set address(value: string) {
         (this.container.elements.namedItem('address') as HTMLInputElement).value = value
     }

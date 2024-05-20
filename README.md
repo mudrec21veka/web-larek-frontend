@@ -11,7 +11,7 @@
 - src/pages/index.html — HTML-файл главной страницы
 - src/types/index.ts — файл с типами
 - src/index.ts — точка входа приложения
-- src/styles/styles.scss — корневой файл стилей
+- src/scss/styles.scss — корневой файл стилей
 - src/utils/constants.ts — файл с константами
 - src/utils/utils.ts — файл с утилитами
 
@@ -42,27 +42,117 @@ yarn build
 
 ## Реализация
 
-Данное приложение было реализовано с помощью архитектуры MVP:
-- Model - модель данных;
-- View - модель отображения интерфейса;
-- Presenter - связующая модель;
+Данное приложение было реализовано с помощью архитектуры MVP(Model-View-Presenter):
+- слой данных (Model) - классы: AppState + WebLarekAPI (слой коммуникации);
+- слой отображения (View) - классы компонентов: Basket, Form, Modal, Success, Card, Contacts, Adress, Page;
+- слой представления (Presenter) - соединение Model и View через навешивания событий в файле index.ts (связующая модель);
 
-## Описание
+## Архитектура проекта
+В проекте используются данные (товара, покупателя) собираемые в объекты данных, которые передается в компоненты (карточка товара, формы данных покупателя) и в коллекции этих объектов.
+
+
+### Описание базовых классов:
+- **Класс EventEmitter** обеспечивает работу событий. Его функции: установить и снять слушателей событий, вызвать слушателей при возникновении события. 
+Использован паттерн «Observer», который позволяет подписаться и уведомлять о событиях.
+  #### Методы:
+  - on(eventName: EventName, callback: (event: T) => void) - установить обработчик на событие
+  - off(eventName: EventName, callback: Subscriber) - снять обработчик с события
+  - emit(eventName: string, data?: T) - инициировать событие с данными
+  - onAll(callback: (event: EmitterEvent) => void) - слушать все события
+  - offAll() - сбросить все обработчики
+  - trigger(eventName: string, context?: Partial<T>) - сделать коллбек триггер, генерирующий событие при вызове
+
+
+- **Класс Api** обеспечивает взаимодействие с сервером. Его функции: выполнить get и post запросы для получения списка продуктов и конкретного продукта.
+    #### Методы:
+  - get(uri: string) - выполняет get запрос на сервер
+  - post(uri: string, data: object, method: ApiPostMethods) - выполняет post запрос на сервер
+
+
+- **Класс Component** обеспечивает методами для работы с DOM. Его функции: устанавливать данные в компонентах, а также отрисовывать их
+    #### Методы:
+  - toggleClass(element: HTMLElement, className: string, force?: boolean) - переключить класс
+  - setText(element: HTMLElement, value: string) - установить текстовое содержимое
+  - setDisabled(element: HTMLElement, state: boolean) - сменить статус блокировки
+  - setHidden(element: HTMLElement) - скрыть компонент
+  - setVisible(element: HTMLElement) - показать компонент
+  - setImage(element: HTMLImageElement, src: string, alt?: string) - установить изображение с альтернативным текстом
+  - render(data?: Partial<T>) - вернуть корневой DOM-элемент
+
+
+- **Класс Model** - абстрактный класс для слоя данных. Его функции: получить данные и события, чтобы уведомлять что данные поменялись
+    #### Методы:
+  - emitChanges(event: string, payload?: object) - сообщить всем что модель поменялась
+
+
+### Слой данных
+- **Класс AppState** - Класс для управления состоянием приложения, т.е. для хранения данных (реализация слоя Model), наследуется от класса Model. Класс получает, передает, хранит и удаляет данные, которые используются Presenter'ом (данные приходят и отправляются в Presenter).
+```TypeScript
+export class AppState extends Model<IAppState> {
+    // установка каталога
+    setCatalog(items: IProduct[]): void
+
+    // добавить товар в корзиину
+    add(item: IProduct): void
+
+    // удалить товар из корзины
+    remove(id: string): void
+
+    // возвращает кол-во продуктов в корзине
+    get count(): void
+
+    // возвращает сумму корзины
+    get total(): void
+
+    // выбранные товары
+    selected(): void
+
+    // установка данных покупателя
+    setDataOrder(field: keyof IValidForm, value: string): void
+
+    // очистка корзины
+    resetBasket(): void
+
+    // очистка данных покупателя
+    resetDataOrder(): void
+
+    // сброс счетчика
+    resetCount(): void
+
+    // очистка выбранных продуктов
+    resetSelected(): void
+
+    // валидация формы адреса
+    validateAddress(): void
+
+    // валидация формы контактов
+    validateContacts(): void
+```
+
+### Слой коммуникаций
+- **Класс WebLarekAPI** - Класс для взаимодействия с сервером, наследуется от класса Api (реализация слоя Model). Методы класса используются для получения данных с сервера и предоставления данных в Presenter для отображения в компонентах (View)
+```TypeScript
+export class WebLarekAPI extends Api implements IWebLarekAPI {
+    ////API_ORIGIN
+    readonly cdn: string;
+
+    constructor(cdn: string, baseUrl: string, options?: RequestInit)
+
+    //поулчить товар
+    getProduct(id: string): Promise<IProduct>
+
+    //получить список товаров
+    getProductList(): Promise<IProduct[]>
+}
+```
 
 ### Типы данных
 ```TypeScript
-export type Category = 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
-
 // Интерфейс данных приложения
 export interface IAppState {
     catalog: IProduct[];  //список товаров
     basket: IProduct[];  //информация из корзины
     order: IOrder | null;  //информация для заказа
-    formErrors: TFormErrors;
-    setCatalog(items: IProduct[]): void;
-    add(card: IProduct): void;
-    remove(id: string): void;
-    setDataOrder(field: keyof IValidForm, value: string): void
 };
 
 // Интерфейс товара
@@ -116,106 +206,149 @@ export type IBacketCard = Pick<IProduct, 'id' | 'title' | 'price'>;
 export type TFormErrors = Partial<Record<keyof IOrder, string>>;
 ```
 
-### Базовые классы
+### Слой представления
+#### Общие компоненты
+- **Класс Basket** - Класс для работы с корзиной, наследуется от класса Component (реализация слоя View). Класс используется для управления отображением данных (товаров, цены) в компоненте корзины.
+```TypeScript
+class Basket extends Component<IBasketView> {
+    constructor(container: HTMLElement, protected events: EventEmitter) {
+        super(container);
+    }
 
-- Класс **Api** отвечает за взаимодействие с сервером.
-**Методы:**
-    - `get(uri: string)` - отправляет GET запросы на сервер;
-    - `post(uri: string, data: object, method: ApiPostMethods = 'POST')` - отправляет POST запросы на сервер.
+    // отображение товаров в корзине
+    set items(items: HTMLElement[]): void
 
-- Абстрактный класс **Component** отвечает за взаимодействие с DOM.
-**Методы:**
-    - `toggleClass(element: HTMLElement, className: string, force?: boolean)` - переключает класс;
-    - `setText(element: HTMLElement, value: unknown)` - устанавливает текстовое содержимое;
-    - `setDisabled(element: HTMLElement, state: boolean)` - меняет статус блокировки;
-    - `setHidden(element: HTMLElement)` - скрывает элемент;
-    - `setVisible(element: HTMLElement)` - показывает элемент;
-    - `setImage(element: HTMLImageElement, src: string, alt?: string)` - устанавливает изображение с альтернативным текстом;
-    - `render(data?: Partial<T>): HTMLElement` - возвращает корневой DOM-элемент.
+    //блокировка кнопки
+    disableButton(value: boolean): void
 
-- Класс **EventEmitter** отвечает за работу событий. Класс основан на паттерне Observer, который позволяет создать зависимость между объектами-наблюдателями и одним объектом-источником. При изменении состояния источника все наблюдатели автоматически об этом оповещаются.
-**Методы:**
-    - `on<T extends object>(eventName: EventName, callback: (event: T) => void)` - устанавливает обработчик на событие;
-    - `off(eventName: EventName, callback: Subscriber)` - снимает обработчик с события;
-    - `emit<T extends object>(eventName: string, data?: T)` - инициирует событие с данными;
-    - `onAll(callback: (event: EmitterEvent) => void)` - слушает все события;
-    - `offAll()` - сбрасывает все события;
-    - `trigger<T extends object>(eventName: string, context?: Partial<T>)` - делает коллбек триггер, генерирующий событие при вызове.
+    // отображение цены в корзине
+    set price(price: number): void
+}
+```
+- **Класс Form** - Класс для работы с формами, наследуется от класса Component (реализация слоя View). Класс используется для установки значения валидности и передачу ошибок в компонент, а также для отображения компонента (render) формы заполнения данных
+```TypeScript
+class Form<T> extends Component<IFormState> {
+    constructor(protected container: HTMLFormElement, protected events: IEvents) {
+        super(container);
+}
 
-- Абстрактный класс **Model** отвечает за работу с данными.
-**Методы:**
-    - `emitChanges(event: string, payload?: object)` - сообщает всем, что модель поменялась.
+    // изменение поля в заказе
+    protected onInputChange(field: keyof T, value: string): void
 
-### Слой данных (Model)
-- Класс **AppState** отвечает за управление данными.
-**Методы:**
-    - `setCatalog(items: IProduct[])` - возвращает список товаров;
-    - `add(item: IProduct)` - добавляет товар в корзину;
-    - `remove(id: string)` - удаляет товар из корзины;
-    - `get count()` - возвращает кол-во товаров в корзине;
-    - `get total()` - возвращает общую стоимость товаров в корзине;
-    - `selected()` - устанавливает выбранные товары в заказе;
-    - `setDataOrder(field: keyof IValidForm, value: string)` - устанавливает данные о покупателе;
-    - `resetBasket()` - очищает корзину;
-    - `resetDataOrder()` - удаляет данные о покупателе;
-    - `resetCount()` - сбрасывает счетчик корзины;
-    - `resetSelected()` - сбрасывает выбранные товары в заказе;
-    - `validateAddress()` - валидация формы адреса;
-    - `validateContacts()` - валидация формы контактов.
+    //установка значения валидности
+    set valid(value: boolean): void
 
-### Слой Presenter
-- Класс **WebLarekAPI** управляет данными между слоем данных (Model) и слоем представления (View).
-**Методы:**
-    - `getProduct(id: string): Promise<IProduct>` - возвращает товар;
-    - `getProductList(): Promise<IProduct[]>` - возвращает список товаров.
+     //передача ошибок в форме
+    set errors(value: string): void
 
-### Слой представления (View)
-- Класс **Page** отвечает за отображение данных на странице.
-**Методы:**
-    - `set counter(value: number)` - устанавливает счетчик товаров;
-    - `set catalog(items: HTMLElement[])` - устанавливает каталог товаров;
-    - `set locked(value: boolean)` - устанавливает блокировку.
+    //отображение формы
+    render(state: Partial<T> & IFormState): void
+}
+```
+- **Класс Modal** - Класс для работы с модальными окнами, наследуется от класса Component (реализация слоя View). Класс используется для управления состоянием (открыт, закрыт) и отображением компонента (render) модального окна.
+```TypeScript
+class Modal extends Component<IModalData> {
+    constructor(container: HTMLElement, protected events: IEvents) {
+        super(container);
+    }
 
-- Класс **Card** отвечает за отображение карточек на странице.
-**Методы:**
-    - `set title(value: string)` - устанавливает название товара;
-    - `set image(value: string)` - устанавливает картинку;
-    - `set text(value: string)` - устанавливает описание;
-    - `set category(value: string)` - устанавливает категорию;
-    - `set price(value: number | null)` - устанавливает цену;
-    - `get price()` - возвращает цену;
-    - `set button(value: string)` - устанавливает текст кнопки;
-    - `set selected(value: boolean)` - устанавливает статус товара (выбран или нет).
+    // установить контент в модалке
+    set content(value: HTMLElement): void
 
-- Класс **Basket** отвечает за отображение данных в корзине.
-**Методы:**
-    - `set items(items: HTMLElement[])` - устанавливает добавленные товары;
-    - `set price(price: number)` - устанавливает общую сумму корзины;
-    - `disableButton(value: boolean)` - блокирует кнопку.
+    // открыть модалку
+    open(): void
 
-- Класс **Form** отвечает за установку контента в формах и его валидацию.
-**Методы:**
-    - `onInputChange(field: keyof T, value: string)` - изменяет значение в поле;
-    - `set valid(value: boolean)` - отображает валидность;
-    - `set errors(value: string)` - устанавливает ошибку;
-    - `render(state: Partial<T> & IFormState)` - отображает форму.
+    // закрыть модалку
+    close(): void
 
-- Класс **Success** отвечает за отображение суммы списанных средств в окне успешного заказа.
-**Методы:**
-    - `set total(total: number)` - устанавливает сумму списанных средств.
+    render(data: IModalData): HTMLElement
+}
+```
+- **Класс Success** - Класс для работы с окном успешного оформления заказа, наследуется от класса Component (реализация слоя View). Класс используется для управления отображением данных (стоимость товара) в компоненте модального окна успешного оформления заказа
+```TypeScript
+class Success extends Component<ISuccess> {
+    constructor(container: HTMLElement, actions: ISuccessActions) {
+        super(container);
+    }
 
-- Класс **Modal** отвечает за работу модальных окон.
-**Методы:**
-    - `set content(value: HTMLElement)` - устанавливает контент;
-    - `open()` - открывает модальное окно;
-    - `close()` - закрывает модальное окно;
-    - `render(data: IModalData)` - отображает модальное окно.
+    //установка количества списанных синапсов
+    set total(total: number): void
+}
+```
 
-- Класс **Address** отвечает за форму с выбором способа оплаты и адреса доставки.
-**Методы:**
-    - `set address(value: string)` - устанавливает адрес доставки.
+#### Компоненты предметной области
+- **Класс Card** - Класс для управления отображением информации о продукте, наследуется от класса Component (реализация слоя View). Класс используется для управления отображением данных (название, картинка) в компоненте карточки товара
+```TypeScript
+class Card extends Component<IProduct> {
+    constructor(container: HTMLElement, actions?: ICardActions) {
+        super(container);
+    }
 
-- Класс **Contacts** отвечает за форму с указанием телефона и почты покупателя.
-**Методы:**
-    - `set phone(value: string)` - устанавливает номер телефона;
-    - `set email(value: string)` - устанавливает почту.
+    // Установка текста в карточку
+    set title(value: string): void
+
+    // Установка изображения в карточку
+    set image(value: string): void
+
+    // Установка описания в карточку
+    set text(value: string): void
+
+    // Устанавливает категорию товара
+    set category(value: string): void
+
+    // Устанавливает цену товара
+    set price(value: number | null): void
+
+    // Возвращает цену товара
+    get price(): number
+
+    // Устанавливает текст кнопки
+    set button(value: string): void
+
+    // Устанавливает статус товара
+	set selected(value: boolean): void
+
+}
+```
+- **Класс Contacts** - Класс для управления отображением формы Контакты, наследуется от класса Form (реализация слоя View). Класс используется для управления отображением данных (телефон, почта) в компоненте формы заполнения данных пользователя
+```TypeScript
+class Contacts extends Form<IСontactsForm> {
+    constructor(container: HTMLFormElement, events: IEvents) {
+        super(container, events)
+    }
+
+    //установка номера телефона
+    set phone(value: string): void
+    
+    //установка почты
+    set email(value: string): void
+}
+```
+- **Класс Address** - Класс для управления отображением формы оформления доставки, наследуется от класса Form (реализация слоя View). Класс используется для управления отображением данных (адрес) в компоненте формы заполнения данных пользователя
+```TypeScript
+class Address extends Form<IAddressForm> {
+    constructor(container: HTMLFormElement, events: IEvents) {
+        super(container, events);
+    }
+
+    //установка адреса заказа
+    set address(value: string): void
+}
+```
+- **Класс Page** - Класс для управления элементами главной страницы, наследуется от класса Component (реализация слоя View). Класс используется для управления состоянием страницы и отображением товаров на странице
+```TypeScript
+class Page extends Component<IPage> {
+    constructor(container: HTMLElement, protected events: IEvents) {
+        super(container);
+    }
+
+    // устанавливливает каталог на странице
+    set catalog(items: HTMLElement[]): void
+
+    // устанавливливает счетчик на корзине
+    set counter(value: number): void
+
+    // установка блокировки на странице
+    set locked(value: boolean): void
+}
+```
