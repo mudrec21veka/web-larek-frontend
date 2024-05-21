@@ -2,18 +2,18 @@ import './scss/styles.scss';
 
 import {WebLarekAPI} from './components/WebLarekAPI';
 import {API_URL, CDN_URL} from "./utils/constants";
-import {EventEmitter} from "./components/base/events";
+import {EventEmitter} from "./components/base/Events";
 import {AppState} from './components/AppState';
 import {Page} from "./components/Page";
 import {cloneTemplate, createElement, ensureElement} from "./utils/utils";
 import {Modal} from "./components/common/Modal";
-import {Basket} from "./components/common/Basket";
+import {Basket} from "./components/Basket";
 import {Card} from './components/Card';
-import {Address} from './components/Address';
+import {AddressForm} from './components/AddressForm';
 import {Contacts} from './components/Contacts';
-import {Success} from './components/common/Success';
+import {Success} from './components/Success';
 import {IAddressForm, IProduct, IValidForm} from './types';
-import {ApiListResponse} from './components/base/api';
+import {ApiListResponse} from './/components/base/Api';
 
 const events = new EventEmitter();
 const api = new WebLarekAPI(CDN_URL, API_URL);
@@ -36,7 +36,7 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // Переиспользуемые части интерфейса
 const basket = new Basket(cloneTemplate(basketTemplate), events);
-const addressForm = new Address(cloneTemplate(addressTemplate), events);
+const addressForm = new AddressForm(cloneTemplate(addressTemplate), events);
 const contactsForm = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), {
     onClick: () => modal.close()

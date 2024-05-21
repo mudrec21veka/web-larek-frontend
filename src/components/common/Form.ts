@@ -1,5 +1,5 @@
 import {Component} from "../base/Component";
-import {IEvents} from "../base/events";
+import {IEvents} from "..//base/Events";
 import {IFormState} from "../../types";
 import {ensureElement} from "../../utils/utils";
 
@@ -28,15 +28,15 @@ export class Form<T> extends Component<IFormState> {
 
     // изменение поля в заказе
     protected onInputChange(field: keyof T, value: string) {
-        this.events.emit(`order:change`, {
+        this.events.emit(`${this.container.name}.${String(field)}:change`, {
             field,
-            value
+            value,
         })
     };
 
     //установка значения валидности
     set valid(value: boolean) {
-        this._submit.disabled = !value
+        this.setDisabled(this._submit, !value);
     };
 
     //передача ошибок в форме

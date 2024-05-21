@@ -1,6 +1,6 @@
 import {Form} from "./common/Form";
 import {IСontactsForm} from "../types";
-import {IEvents} from "./base/events";
+import {IEvents} from "./base/Events";
 
 /**
  * Класс для управления отображением формы Контакты, наследуется от класса Form (реализация слоя View).
