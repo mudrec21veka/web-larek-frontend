@@ -41,11 +41,6 @@ export class Card extends Component<IProduct> {
         }
     };
 
-    toggleBasketButton(value: boolean, text: string) {
-		this.setDisabled(this._button, !value);
-		this.setText(this._button, text);
-	}
-    
     // Установка текста в карточку
     set title(value: string) {
         this.setText(this._title, value)
@@ -61,11 +56,11 @@ export class Card extends Component<IProduct> {
         this.setText(this._text, value)
     };
 
-    // Устанавливает категорию товара 
-    set category(value: string) { 
-        this.setText(this._category, value); 
-        this._category.classList.add(`card__category_${TCategory[value]}`); 
-    };
+    // Устанавливает категорию товара
+    set category(value: string) {
+        this.setText(this._category, value);
+        this._category.classList.add(`card__category_${TCategory[value]}`);
+    }
 
     // Устанавливает цену товара
     set price(value: number | null) {

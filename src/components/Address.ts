@@ -2,7 +2,7 @@ import {Form} from "./common/Form";
 import {IAddressForm} from "../types";
 import {IEvents} from "./base/Events";
 
-export class AddressForm extends Form<IAddressForm> {
+export class Address extends Form<IAddressForm> {
     protected _card : HTMLButtonElement;
     protected _cash : HTMLButtonElement;
     protected _button : HTMLButtonElement;
@@ -27,8 +27,12 @@ export class AddressForm extends Form<IAddressForm> {
                 this._cash.classList.add('button_alt-active');
                 this._card.classList.remove('button_alt-active');
                 this.onInputChange('payment', 'cash')
-            });
+            })
         }
+
+        this._button.addEventListener('click', () => {
+            this.events.emit('address:submit')
+        })
     };
 
     //установка адреса заказа
