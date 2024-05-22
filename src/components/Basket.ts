@@ -1,5 +1,5 @@
-import {Component} from '../components/base/Component';
-import {EventEmitter} from '../components/base/Events';
+import {Component} from './base/component';
+import {EventEmitter} from './base/events';
 import {IBasket} from '../types';
 import {createElement, ensureElement} from "../utils/utils";
 

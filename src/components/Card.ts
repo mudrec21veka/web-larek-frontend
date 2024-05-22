@@ -1,4 +1,4 @@
-import {Component} from './base/Component';
+import {Component} from './base/component';
 import {Category, ICard, ICardAction} from "../types";
 import {ensureElement} from "../utils/utils";
 

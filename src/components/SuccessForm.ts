@@ -1,5 +1,5 @@
 import {IOrderSuccess, ISuccessActions} from "../types";
-import {Component} from '../components/base/Component';
+import {Component} from './base/component';
 import {ensureElement} from "../utils/utils";
 
 /**

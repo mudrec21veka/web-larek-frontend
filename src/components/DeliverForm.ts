@@ -1,5 +1,5 @@
 import {IDeliverForm} from '../types';
-import {IEvents} from './base/Events';
+import {IEvents} from './base/events';
 import {Form} from "./common/Form";
 
 /**
