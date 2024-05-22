@@ -92,124 +92,149 @@ yarn build
 
 
 ### Слой данных
-- **Класс AppState** - Класс для управления состоянием приложения, т.е. для хранения данных (реализация слоя Model), наследуется от класса Model. Класс получает, передает, хранит и удаляет данные, которые используются Presenter'ом (данные приходят и отправляются в Presenter).
+- **Класс AppData** - Класс для управления состоянием приложения, т.е. для хранения данных (реализация слоя Model), наследуется от класса Model. Класс получает, передает, хранит и удаляет данные, которые используются Presenter'ом (данные приходят и отправляются в Presenter).
 ```TypeScript
-export class AppState extends Model<IAppState> {
-    // установка каталога
+  export class AppData extends Model<IAppData> {
+    // Получение списка товаров
     setCatalog(items: IProduct[]): void
 
-    // добавить товар в корзиину
-    add(item: IProduct): void
+    // Добавление товара в корзину
+    add(value: Product): void
 
-    // удалить товар из корзины
+    // Удаление товара из корзины
     remove(id: string): void
 
-    // возвращает кол-во продуктов в корзине
+    // Подсчет количества товаров
     get count(): void
 
-    // возвращает сумму корзины
-    get total(): void
+    // Получение итоговой суммы заказа в корзине
+    get totalPrice(): void
 
-    // выбранные товары
-    selected(): void
+    //добавление данных покупателя
+    setCustomerData(): void
 
-    // установка данных покупателя
-    setDataOrder(field: keyof IValidForm, value: string): void
-
-    // очистка корзины
+    // Очистка корзины
     resetBasket(): void
 
-    // очистка данных покупателя
-    resetDataOrder(): void
+    // Установка полей заказа
+    setOrderField(field: keyof IOrderForm, value: string)
 
-    // сброс счетчика
-    resetCount(): void
+    // Валидация формы заполнения Email и телефона
+    validateContacts()
 
-    // очистка выбранных продуктов
-    resetSelected(): void
+    // Валидация формы заполнения способа оплаты и адрес доставки
+    validateOrder()
 
-    // валидация формы адреса
-    validateAddress(): void
-
-    // валидация формы контактов
-    validateContacts(): void
+    // Очистка данных покупателя
+    resetOrder(): void
+}
 ```
 
 ### Слой коммуникаций
-- **Класс WebLarekAPI** - Класс для взаимодействия с сервером, наследуется от класса Api (реализация слоя Model). Методы класса используются для получения данных с сервера и предоставления данных в Presenter для отображения в компонентах (View)
+- **Класс LarekAPI** - Класс для взаимодействия с сервером, наследуется от класса Api (реализация слоя Model). Методы класса используются для получения данных с сервера и предоставления данных в Presenter для отображения в компонентах (View)
 ```TypeScript
-export class WebLarekAPI extends Api implements IWebLarekAPI {
+export class LarekAPI extends Api implements ILarekAPI {
     //API_ORIGIN
     readonly cdn: string;
 
     constructor(cdn: string, baseUrl: string, options?: RequestInit)
 
-    //поулчить товар
-    getProduct(id: string): Promise<IProduct>
+    // Получить товар
+    getProduct(id: string): Promise<ICard>
 
-    //получить список товаров
-    getProductList(): Promise<IProduct[]>
+    // Получить список товаров
+    getProductList(): Promise<ICard[]> 
 }
 ```
 
 ### Типы данных
 ```TypeScript
 // Интерфейс данных приложения
-export interface IAppState {
-    catalog: IProduct[];  //список товаров
-    basket: IProduct[];  //информация из корзины
-    order: IOrder | null;  //информация для заказа
-};
+export interface IAppData {
+  catalog: IProduct[]; //список товаров
+  basket: IProduct[]; //информация из корзины
+  order: IOrder | null; //информация для заказа
+}
+
+// Интерфейс главной страницы
+export interface IPage {
+  list: HTMLElement[]; //список товаров
+}
 
 // Интерфейс товара
 export interface IProduct {
-    id: string;  //id товара              
-    description: string;  //описание товара
-    image: string;  //изображение товара
-    title: string;  //наименование товара
-    category: Category;  //категория товара
-    price: number | null;  //цена товара
-    selected?: boolean;  //выбран ли товар
-};
+  id: string; //id товара
+  category: Category; //категория товара
+  title: string; //наименование товара
+  description: string; //описание товара
+  image: string; //изображение товара
+  price: number | null; //цена товара
+  selected?: boolean; //выбран ли товар
+}
+
+// Интерфейс карточки товара
+export interface ICard extends IProduct {
+  selected: boolean; //в корзине ли товар
+  index?: number;
+}
 
 // Интерфейс модального окна для оформления доставки
-export interface IAddressForm {
-    payment: string;  //способ оплаты
-    address: string;  //адрес доставки
-};
+export interface IDeliverForm {
+  address: string; //адрес доставки
+  payment: string; //способ оплаты
+}
 
 // Интерфейс модального окна Контакты
-export interface IСontactsForm {
-    email: string;  //email
-    phone: string;  //телефон
-};
-
-// Интерфейс валидации форм
-export type IValidForm = Pick<IOrder, 'payment' | 'address' | 'email' | 'phone'>;
-
-// Интерфейс заказа
-export interface IOrder extends IAddressForm, IСontactsForm {
-    items: string[];  //список id товаров
-    total: number;  //общая сумма заказа
-};
-
-// Интерфейс окна формы
-export interface IFormState {
-    valid: boolean;  //валидность формы
-    errors: string[];  //ошибки в форме
-};
+export interface IContactForm {
+  email: string; //email
+  phone: string; //телефон
+}
 
 // Интерфейс корзины
-export interface IBasketView {
-    items: HTMLElement[];
-    total: number;
-};
+export interface IBasket {
+  items: HTMLElement[]; //список товаров
+  price: number; //стоимость заказа
+}
 
-// Товар в корзине
-export type IBacketCard = Pick<IProduct, 'id' | 'title' | 'price'>;
+// Интерфейс заказа
+export interface IOrder extends IDeliverForm, IContactForm {
+  items: string[]; //список id товаров
+  total: number; //общая сумма заказа
+}
 
-// Ошибка в форме
-export type TFormErrors = Partial<Record<keyof IOrder, string>>;
+// Интерфейс формы заказа
+export interface IOrderForm extends IDeliverForm, IContactForm {}
+
+// Интерфейс валидации формы
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
+
+// Интерфейс успешное оформление заказа
+export interface IOrderSuccess {
+  id: string; //id заказа
+  count: number; //количество списанных синапсов
+}
+
+// Интерфейс действий окна успешного оформления заказа
+export interface ISuccessActions {
+  onClick: () => void; //по клику
+}
+
+// Интерфейс модального окна
+export interface IModal {
+  // Содержимое
+  content: HTMLElement;
+}
+
+// Интерфейс окна формы
+export interface IForm {
+  valid: boolean; //валидность формы
+  errors: string[]; //ошибки в форме
+}
+
+// Интерфейс действий над карточкой
+export interface ICardAction {
+  onClick: (event: MouseEvent) => void; //по клику
+}
 ```
 
 ### Слой представления
@@ -270,91 +295,87 @@ class Modal extends Component<IModalData> {
     render(data: IModalData): HTMLElement
 }
 ```
-- **Класс Success** - Класс для работы с окном успешного оформления заказа, наследуется от класса Component (реализация слоя View). Класс используется для управления отображением данных (стоимость товара) в компоненте модального окна успешного оформления заказа
+- **Класс SuccessForm** - Класс для работы с окном успешного оформления заказа, наследуется от класса Component (реализация слоя View). Класс используется для управления отображением данных (стоимость товара) в компоненте модального окна успешного оформления заказа
 ```TypeScript
-class Success extends Component<ISuccess> {
-    constructor(container: HTMLElement, actions: ISuccessActions) {
-        super(container);
-    }
+class SuccessForm extends Component<IOrderSuccess> {
+  constructor(container: HTMLElement) {
+    super(container);
+  }
 
-    //установка количества списанных синапсов
-    set total(total: number): void
+  //установка количества списанных синапсов
+  set count(value: number): void
 }
 ```
 
 #### Компоненты предметной области
 - **Класс Card** - Класс для управления отображением информации о продукте, наследуется от класса Component (реализация слоя View). Класс используется для управления отображением данных (название, картинка) в компоненте карточки товара
 ```TypeScript
-class Card extends Component<IProduct> {
-    constructor(container: HTMLElement, actions?: ICardActions) {
-        super(container);
-    }
+class Card extends Component<ICard> {
+  constructor(container: HTMLElement) {
+    super(container);
+  }
 
-    // Установка текста в карточку
-    set title(value: string): void
+  // Установка текста в карточку
+  set title(value: string): void
 
-    // Установка изображения в карточку
-    set image(value: string): void
+  // Получение текста в карточке
+  get title(): string
 
-    // Установка описания в карточку
-    set text(value: string): void
+  // Установка изображения в карточку
+  set image(value: string): void
 
-    // Устанавливает категорию товара
-    set category(value: string): void
+  // Установка описания в карточку
+  set description(value: string)
 
-    // Устанавливает цену товара
-    set price(value: number | null): void
+  // Получение описания в карточке
+  get description(): string
 
-    // Возвращает цену товара
-    get price(): number
+  // Установка категории товара
+  set category(value: Category): void
 
-    // Устанавливает текст кнопки
-    set button(value: string): void
+  // Установка цены товара
+  set price(value: number | null): void
 
-    // Устанавливает статус товара
-	set selected(value: boolean): void
-
+  // Установка выбранности товара
+  set selected(value: boolean): void
 }
 ```
-- **Класс Contacts** - Класс для управления отображением формы Контакты, наследуется от класса Form (реализация слоя View). Класс используется для управления отображением данных (телефон, почта) в компоненте формы заполнения данных пользователя
+- **Класс ContactForm** - Класс для управления отображением формы Контакты, наследуется от класса Form (реализация слоя View). Класс используется для управления отображением данных (телефон, почта) в компоненте формы заполнения данных пользователя
 ```TypeScript
-class Contacts extends Form<IСontactsForm> {
-    constructor(container: HTMLFormElement, events: IEvents) {
-        super(container, events)
-    }
+class ContactForm extends Form<IContactForm> {
+  constructor(container: HTMLFormElement, events: IEvents) {
+    super(container, events);
+  }
 
-    //установка номера телефона
-    set phone(value: string): void
-    
-    //установка почты
-    set email(value: string): void
+  // Установка номера телефона
+  set phone(value: string): void
+
+  // Установка почты
+  set email(value: string): void
 }
 ```
-- **Класс Address** - Класс для управления отображением формы оформления доставки, наследуется от класса Form (реализация слоя View). Класс используется для управления отображением данных (адрес) в компоненте формы заполнения данных пользователя
+- **Класс DeliverForm** - Класс для управления отображением формы оформления доставки, наследуется от класса Form (реализация слоя View). Класс используется для управления отображением данных (адрес) в компоненте формы заполнения данных пользователя
 ```TypeScript
-class Address extends Form<IAddressForm> {
-    constructor(container: HTMLFormElement, events: IEvents) {
-        super(container, events);
-    }
+class DeliverForm extends Form<IDeliverForm> {
+  constructor(container: HTMLFormElement, events: IEvents) {
+    super(container, events);
+  }
 
-    //установка адреса заказа
-    set address(value: string): void
+  // Установка адреса заказа
+  set address(value: string): void
 }
 ```
 - **Класс Page** - Класс для управления элементами главной страницы, наследуется от класса Component (реализация слоя View). Класс используется для управления состоянием страницы и отображением товаров на странице
 ```TypeScript
 class Page extends Component<IPage> {
-    constructor(container: HTMLElement, protected events: IEvents) {
-        super(container);
-    }
+  constructor(container: HTMLElement, protected events: IEvents) {
+    super(container);
+  }
 
-    // устанавливливает каталог на странице
-    set catalog(items: HTMLElement[]): void
+  //установка списка товаров на странице
+  set list(items: HTMLElement[]): void
 
-    // устанавливливает счетчик на корзине
-    set counter(value: number): void
-
-    // установка блокировки на странице
-    set locked(value: boolean): void
+  //установка блокировки на странице
+  set blocked(value: boolean): void
 }
 ```

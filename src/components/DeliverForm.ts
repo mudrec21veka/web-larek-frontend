@@ -1,8 +1,13 @@
+import {IDeliverForm} from '../types';
+import {IEvents} from './base/Events';
 import {Form} from "./common/Form";
-import {IAddressForm} from "../types";
-import {IEvents} from "./base/Events";
 
-export class Address extends Form<IAddressForm> {
+/**
+ * Класс для управления отображением формы оформления доставки, наследуется от класса Form (реализация слоя View).
+ * Класс используется для управления отображением данных (адрес) в компоненте формы заполнения данных пользователя
+ */
+
+export class DeliverForm extends Form<IDeliverForm> {
     protected _card : HTMLButtonElement;
     protected _cash : HTMLButtonElement;
     protected _button : HTMLButtonElement;
@@ -27,13 +32,9 @@ export class Address extends Form<IAddressForm> {
                 this._cash.classList.add('button_alt-active');
                 this._card.classList.remove('button_alt-active');
                 this.onInputChange('payment', 'cash')
-            })
+            });
         }
-
-        this._button.addEventListener('click', () => {
-            this.events.emit('address:submit')
-        })
-    };
+    }
 
     //установка адреса заказа
     set address(value: string) {

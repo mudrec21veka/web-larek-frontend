@@ -1,47 +1,50 @@
 import {Component} from "../base/Component";
-import {ensureElement} from "../../utils/utils";
+import {IModal} from "../../types";
 import {IEvents} from "../base/Events";
+import {ensureElement} from "../../utils/utils";
 
-interface IModalData {
-    content: HTMLElement
-};
-
-export class Modal extends Component<IModalData> {
-    protected _closeButton: HTMLButtonElement;
-    protected _content: HTMLElement;
+/**
+ * Класс для работы с модальными окнами, наследуется от класса Component (реализация слоя View).
+ * Класс используется для управления состоянием (открыт, закрыт) и отображением компонента (render) модального окна
+ */
+export class Modal extends Component<IModal> {
+    protected modalContent: HTMLElement;
+    protected closeButton: HTMLButtonElement;
 
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
 
-        this._closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
-        this._content = ensureElement<HTMLElement>('.modal__content', container);
+        this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
+        this.modalContent = ensureElement<HTMLElement>('.modal__content', container);
 
-        this._closeButton.addEventListener('click', this.close.bind(this));
+        this.closeButton.addEventListener('click', this.close.bind(this));
         this.container.addEventListener('click', this.close.bind(this));
-        this._content.addEventListener('click', event => event.stopPropagation())
+        this.modalContent.addEventListener('click', (event) => event.stopPropagation());
     }
 
-    // установить контент в модалке
+    // установка контент в модалке
     set content(value: HTMLElement) {
-        this._content.replaceChildren(value)
-    };
+        this.modalContent.replaceChildren(value);
+    }
 
     // открыть модалку
     open() {
         this.container.classList.add('modal_active');
-        this.events.emit('modal:open')
-    };
+        this.events.emit('modal:open');
+    }
 
     // закрыть модалку
     close() {
         this.container.classList.remove('modal_active');
         this.content = null;
-        this.events.emit('modal:close')
-    };
+        this.events.emit('modal:close');
+    }
 
-    render(data: IModalData): HTMLElement {
+    // отображение модалки
+    render(data: IModal) {
         super.render(data);
         this.open();
-        return this.container
+
+        return this.container;
     }
 }

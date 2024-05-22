@@ -1,13 +1,13 @@
+import {IContactForm } from '../types';
+import {IEvents} from './base/Events';
 import {Form} from "./common/Form";
-import {IСontactsForm} from "../types";
-import {IEvents} from "./base/Events";
 
 /**
  * Класс для управления отображением формы Контакты, наследуется от класса Form (реализация слоя View).
  * Класс используется для управления отображением данных (телефон, почта) в компоненте формы заполнения данных пользователя
  */
 
-export class Contacts extends Form<IСontactsForm> {
+export class ContactForm extends Form<IContactForm> {
 
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events)

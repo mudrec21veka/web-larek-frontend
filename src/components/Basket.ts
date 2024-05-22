@@ -1,42 +1,53 @@
-import {Component} from "../components/base/Component";
+import {Component} from '../components/base/Component';
+import {EventEmitter} from '../components/base/Events';
+import {IBasket} from '../types';
 import {createElement, ensureElement} from "../utils/utils";
-import {IBasketView} from "../types";
-import {EventEmitter} from "../components/base/Events";
 
-export class Basket extends Component<IBasketView> {
-    protected _list: HTMLElement;
-    protected _price: HTMLSpanElement;
-    protected _button: HTMLButtonElement;
+/**
+ * Класс для работы с корзиной, наследуется от класса Component (реализация слоя View).
+ * Класс используется для управления отображением данных (товаров, цены) в компоненте корзины
+ */
+export class Basket extends Component<IBasket> {
+    protected list: HTMLElement;
+    protected total: HTMLElement | null;
+    protected button: HTMLButtonElement | null;
 
     constructor(container: HTMLElement, protected events: EventEmitter) {
         super(container);
 
-        this._list = ensureElement<HTMLUListElement>('.basket__list', this.container);
-        this._price = ensureElement<HTMLSpanElement>('.basket__price', this.container);
-        this._button = ensureElement<HTMLButtonElement>('.basket__button', this.container);
-        if (this._button)
-            this._button.addEventListener('click', () => {
-                events.emit('address:open');
-            })
-    };
+        this.list = ensureElement<HTMLElement>('.basket__list', this.container);
+        this.total = this.container.querySelector('.basket__price');
+        this.button = this.container.querySelector('.basket__button');
 
-    // отображение товаров в корзине
+        if (this.button) {
+            this.button.addEventListener('click', () => {
+                events.emit('order:open');
+            });
+        }
+        this.items = [];
+    }
+
+    //установка списка товаров
     set items(items: HTMLElement[]) {
-        if (items.length)
-            this._list.replaceChildren(...items)
-        else
-            this._list.replaceChildren(createElement<HTMLParagraphElement>('p', {
-                textContent: 'Корзина пуста'
-            }))
+        if (items.length) {
+            this.list.replaceChildren(...items);
+        }
+        else {
+            this.list.replaceChildren(
+                createElement<HTMLParagraphElement>('p', {
+                    textContent: 'В корзине пусто',
+                })
+            );
+        }
+    }
+
+    //установка цены
+    set price(value: number) {
+        this.total.textContent = String(value) + ' синапсов';
     }
 
     //блокировка кнопки
     disableButton(value: boolean) {
-        this._button.disabled = value;
-    }
-
-    // отображение цены в корзине
-    set price(price: number) {
-        this.setText(this._price, `${price} синапсов`)
+        this.button.disabled = value;
     }
 }

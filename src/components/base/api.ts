@@ -5,6 +5,11 @@ export type ApiListResponse<Type> = {
 
 export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 
+/**
+ * Класс обеспечивает взаимодействие с сервером.
+ * Его функции: выполнить get и post запросы для получения списка продуктов и конкретного продукта.
+ */
+
 export class Api {
     readonly baseUrl: string;
     protected options: RequestInit;
