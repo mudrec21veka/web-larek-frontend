@@ -1,4 +1,4 @@
-import {Api, ApiListResponse} from './base/api';
+import {Api, ApiListResponse} from './base/Api';
 import {ICard} from '../types';
 
 export interface ILarekAPI {

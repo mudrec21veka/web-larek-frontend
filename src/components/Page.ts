@@ -1,6 +1,6 @@
-import {Component} from './base/component';
+import {Component} from './base/Component';
 import {IPage} from '../types';
-import {IEvents} from './base/events';
+import {IEvents} from './base/Events';
 import {ensureElement} from "../utils/utils";
 
 /**
@@ -34,10 +34,10 @@ export class Page extends Component<IPage> {
 
     //установка блокировки на странице
     set blocked(value: boolean) {
-        if (value) {
-            this.wrapper.classList.add('page__wrapper_locked');
-        } else {
-            this.wrapper.classList.remove('page__wrapper_locked');
-        }
+		if (value) {
+			this.toggleClass(this.wrapper, 'page__wrapper_locked', true);
+		} else {
+			this.toggleClass(this.wrapper, 'page__wrapper_locked', false);
+		}
     }
 }

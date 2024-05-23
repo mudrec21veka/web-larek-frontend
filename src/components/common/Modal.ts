@@ -1,6 +1,6 @@
-import {Component} from "../base/component";
+import {Component} from "../base/Component";
 import {IModal} from "../../types";
-import {IEvents} from "../base/events";
+import {IEvents} from "../base/Events";
 import {ensureElement} from "../../utils/utils";
 
 /**
@@ -29,13 +29,13 @@ export class Modal extends Component<IModal> {
 
     // открыть модалку
     open() {
-        this.container.classList.add('modal_active');
+        this.toggleClass(this.container, 'modal_active', true);
         this.events.emit('modal:open');
     }
 
     // закрыть модалку
     close() {
-        this.container.classList.remove('modal_active');
+        this.toggleClass(this.container, 'modal_active', false);
         this.content = null;
         this.events.emit('modal:close');
     }

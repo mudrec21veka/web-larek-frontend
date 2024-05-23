@@ -1,4 +1,4 @@
-import {Component} from './base/component';
+import {Component} from './base/Component';
 import {Category, ICard, ICardAction} from "../types";
 import {ensureElement} from "../utils/utils";
 
@@ -68,18 +68,21 @@ export class Card extends Component<ICard> {
     //установка категории товара
     set category(value: Category) {
         this.setText(this.cardCategory, value);
-        this.cardCategory.classList.add(`card__category_${CategoryTypes[value]}`);
+        const categoryClass = CategoryTypes[value];
+        this.toggleClass(this.cardCategory, `card__category_${categoryClass}`, true);
     }
 
     //установка цены товара
     set price(value: number | null) {
         if (value !== null) {
-            this.cardPrice.textContent = String(value) + ' синапсов';
-        }
-        else {
-            this.cardPrice.textContent = 'Бесценно';
+            this.setText(this.cardPrice, `${value} синапсов`);
             if (this.button) {
-                this.button.disabled = true;
+                this.setDisabled(this.button, false);
+            }
+        } else {
+            this.setText(this.cardPrice, 'Бесценно');
+            if (this.button) {
+                this.setDisabled(this.button, true);
             }
         }
     }

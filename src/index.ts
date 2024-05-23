@@ -1,6 +1,6 @@
 import './scss/styles.scss';
 
-import {EventEmitter} from "./components/base/events";
+import {EventEmitter} from "./components/base/Events";
 import {AppData} from "./components/AppData";
 import {Card} from "./components/Card";
 import {cloneTemplate, ensureElement} from "./utils/utils";
@@ -12,7 +12,7 @@ import {Modal} from "./components/common/Modal";
 import {Basket} from "./components/Basket";
 import {DeliverForm} from "./components/DeliverForm";
 import {ContactForm} from "./components/ContactForm";
-import {ApiListResponse} from "./components/base/api";
+import {ApiListResponse} from "./components/base/Api";
 import {SuccessForm} from "./components/SuccessForm";
 import {IOrderForm} from "./types";
 

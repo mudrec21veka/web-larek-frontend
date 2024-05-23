@@ -1,5 +1,5 @@
-import {Component} from './base/component';
-import {EventEmitter} from './base/events';
+import {Component} from './base/Component';
+import {EventEmitter} from './base/Events';
 import {IBasket} from '../types';
 import {createElement, ensureElement} from "../utils/utils";
 
@@ -43,7 +43,7 @@ export class Basket extends Component<IBasket> {
 
     //установка цены
     set price(value: number) {
-        this.total.textContent = String(value) + ' синапсов';
+        this.setText(this.total, `${value} синапсов`);
     }
 
     //блокировка кнопки

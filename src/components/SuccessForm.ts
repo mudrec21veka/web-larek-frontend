@@ -1,5 +1,5 @@
 import {IOrderSuccess, ISuccessActions} from "../types";
-import {Component} from './base/component';
+import {Component} from './base/Component';
 import {ensureElement} from "../utils/utils";
 
 /**
@@ -27,7 +27,7 @@ export class SuccessForm extends Component<IOrderSuccess> {
     }
 
     //установка количества списанных синапсов
-    set count(value: number) {
-        this.orderCount.textContent = 'Списано ' + String(value) + ' синапсов';
+    set count(value: string) {
+        this.setText(this.orderCount, `Списано ${value} синапсов`);
     }
 }
