@@ -44,7 +44,7 @@ yarn build
 
 Данное приложение было реализовано с помощью архитектуры MVP(Model-View-Presenter):
 - слой данных (Model) - классы: AppState + LarekAPI (слой коммуникации);
-- слой отображения (View) - классы компонентов: Basket, Form, Modal, SuccessForm, Card, ContactForm, Adress, Page;
+- слой отображения (View) - классы компонентов: Basket, Form, Modal, SuccessForm, Card, ContactForm, DeliverForm, Page;
 - слой представления (Presenter) - соединение Model и View через навешивания событий в файле index.ts (связующая модель);
 
 ## Архитектура проекта
