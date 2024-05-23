@@ -149,109 +149,10 @@ export class LarekAPI extends Api implements ILarekAPI {
 
 ### Типы данных
 ```TypeScript
-/# Проектная работа "Веб-ларек"
-
-Стек: HTML, SCSS, TS, Webpack
-
-Структура проекта:
-- src/ — исходные файлы проекта
-- src/components/ — папка с JS компонентами
-- src/components/base/ — папка с базовым кодом
-
-Важные файлы:
-- src/pages/index.html — HTML-файл главной страницы
-- src/types/index.ts — файл с типами
-- src/index.ts — точка входа приложения
-- src/styles/styles.scss — корневой файл стилей
-- src/utils/constants.ts — файл с константами
-- src/utils/utils.ts — файл с утилитами
-
-### Установка и запуск
-Для установки и запуска проекта необходимо выполнить команды
-
-```
-npm install
-npm run start
-```
-
-или
-
-```
-yarn
-yarn start
-```
-### Сборка
-
-```
-npm run build
-```
-
-или
-
-```
-yarn build
-```
-
-### О проекте:
-Использован паттерн MVP (Model-View-Presenter). Проект разделен на слои: 
-- слой данных (Model) - классы: AppData + LarekAPI (слой коммуникации)
-- слой отображения (View) - классы компонентов: Basket, Form, Modal, SuccessForm, Card, ContactForm, DeliverForm, Page
-- слой представления (Presenter): соединение Model и View через навешивания событий в файле index.ts
-
-Взаимодействие данных (процессов) происходит с помощью событий (events), которые устанавливаются (emit) на определенные события, например, открытие модального окна.
-И по наступлению события в Presenter'е выполняется соответствующих код, например, блокировка страницы (вокруг открытого модального окна).
-
-[MVP.png](https://github.com/Sogdian/web-larek-frontend/blob/main/src/images/MVP.png)
-![MVP](./src/images/MVP.png)
-
-### Архитектура проекта
-В проекте используются данные (товара, покупателя) собираемые в объекты данных, которые передается в компоненты (карточка товара, формы данных покупателя) и в коллекции этих объектов.
-
-[Architecture.png](https://github.com/Sogdian/web-larek-frontend/blob/main/src/images/Architecture.png)
-![Architecture](./src/images/Architecture.png)
-
-Компоненты в проекте - модальные окна: товара, корзины, форм заполнения данных пользователя и успешного оформления заказа.
-
-### Описание базовых классов:
-- **Класс EventEmitter** обеспечивает работу событий. Его функции: установить и снять слушателей событий, вызвать слушателей при возникновении события. 
-Использован паттерн «Observer», который позволяет подписаться и уведомлять о событиях.
-  #### Методы:
-  - on(eventName: EventName, callback: (event: T) => void) - установить обработчик на событие
-  - off(eventName: EventName, callback: Subscriber) - снять обработчик с события
-  - emit(eventName: string, data?: T) - инициировать событие с данными
-  - onAll(callback: (event: EmitterEvent) => void) - слушать все события
-  - offAll() - сбросить все обработчики
-  - trigger(eventName: string, context?: Partial<T>) - сделать коллбек триггер, генерирующий событие при вызове
 
 
-- **Класс Api** обеспечивает взаимодействие с сервером. Его функции: выполнить get и post запросы для получения списка продуктов и конкретного продукта.
-    #### Методы:
-  - get(uri: string) - выполняет get запрос на сервер
-  - post(uri: string, data: object, method: ApiPostMethods) - выполняет post запрос на сервер
 
 
-- **Класс Component** обеспечивает методами для работы с DOM. Его функции: устанавливать данные в компонентах, а также отрисовывать их
-    #### Методы:
-  - toggleClass(element: HTMLElement, className: string, force?: boolean) - переключить класс
-  - setText(element: HTMLElement, value: string) - установить текстовое содержимое
-  - setDisabled(element: HTMLElement, state: boolean) - сменить статус блокировки
-  - setHidden(element: HTMLElement) - скрыть компонент
-  - setVisible(element: HTMLElement) - показать компонент
-  - setImage(element: HTMLImageElement, src: string, alt?: string) - установить изображение с альтернативным текстом
-  - render(data?: Partial<T>) - вернуть корневой DOM-элемент
-
-
-- **Класс Model** - абстрактный класс для слоя данных. Его функции: получить данные и события, чтобы уведомлять что данные поменялись
-    #### Методы:
-  - emitChanges(event: string, payload?: object) - сообщить всем что модель поменялась
-
-# UML схема
-[UML.png](https://github.com/Sogdian/web-larek-frontend/blob/main/src/images/UML.png)
-
-![UML](./src/images/UML.png)
-
-### Слой данных
-- **Класс AppData** - Класс для управления состоянием приложения, т.е. для хранения данных (реализация слоя Model), наследуется от класса Model. Класс получает, передает, хранит и удаляет данные, которые используются Presenter'ом (данные приходят и отправляются в Presenter). Например, в Presenter (index.ts) вызывается экземпляр класса AppData и происходит передача данных, например товара (Product) используя метод (add) класса AppData
 ```TypeScript
   export class AppData extends Model<IAppData> {
     //получение списка товаров
