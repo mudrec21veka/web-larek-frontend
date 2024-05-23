@@ -139,66 +139,6 @@ export class LarekAPI extends Api implements ILarekAPI {
 
     constructor(cdn: string, baseUrl: string, options?: RequestInit)
 
-    // Получить товар
-    getProduct(id: string): Promise<ICard>
-
-    // Получить список товаров
-    getProductList(): Promise<ICard[]> 
-}
-```
-
-### Типы данных
-```TypeScript
-
-
-
-
-```TypeScript
-  export class AppData extends Model<IAppData> {
-    //получение списка товаров
-    setCatalog(items: IProduct[]): void
-
-    //добавление товара в корзину
-    add(value: Product): void
-
-    //удаление товара из корзины
-    remove(id: string): void
-
-    //подсчет количества товаров
-    get count(): void
-
-    //получение итоговой суммы заказа в корзине
-    get totalPrice(): void
-
-    //добавление данных покупателя
-    setCustomerData(): void
-
-    //очистка корзины
-    resetBasket(): void
-
-    //установка полей заказа
-    setOrderField(field: keyof IOrderForm, value: string)
-
-    //валидация формы заполнения Email и телефона
-    validateContacts()
-
-    //валидация формы заполнения способа оплаты и адрес доставки
-    validateOrder()
-
-    //очистка данных покупателя
-    resetOrder(): void
-}
-```
-
-### Слой коммуникаций
-- **Класс LarekAPI** - Класс для взаимодействия с сервером, наследуется от класса Api (реализация слоя Model). Методы класса используются для получения данных с сервера и предоставления данных в Presenter для отображения в компонентах (View)
-```TypeScript
-export class LarekAPI extends Api implements ILarekAPI {
-    //API_ORIGIN
-    readonly cdn: string;
-
-    constructor(cdn: string, baseUrl: string, options?: RequestInit)
-
     //получить товар
     getProduct(id: string): Promise<ICard>
 
