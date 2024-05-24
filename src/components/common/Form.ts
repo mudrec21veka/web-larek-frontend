@@ -30,17 +30,28 @@ export class Form<T> extends Component<IForm> {
         });
     }
 
-    // изменение поля в заказе
+    //изменение поля в заказе
     protected onInputChange(field: keyof T, value: string) {
         this.events.emit(`order:change`, {
             field,
             value,
         });
     }
+    //Модульное окно, "контакт" тоже относится к заказу, эта функция является лишь посредником передачи данных с полей в оъект AppState
+    //для последующей волидации и добавления их в объект заказа. То что вы просите заставит каждый раз дублировать код для каждого атрибута name!
+    //Может быть и можно это как-то оптимизировать, но разве это не перечит принципу KISS 
+    /*
+        protected onInputChange(field: keyof T, value: string) {
+            this.events.emit(`${this.container.name}:change`, {
+                field,
+                value,
+            });
+        }
+    */
 
     // установка значения валидности
     set valid(value: boolean) {
-        this.submit.disabled = !value;
+        this.setDisabled(this.submit, !value); 
     }
 
     // передача ошибок в форме

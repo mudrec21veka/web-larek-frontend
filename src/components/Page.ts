@@ -27,6 +27,10 @@ export class Page extends Component<IPage> {
         });
     }
 
+    set counter(value: number) { 
+        this.count.textContent = String(value); 
+      }
+
     //установка списка товаров на странице
     set list(items: HTMLElement[]) {
         this.catalog.replaceChildren(...items);

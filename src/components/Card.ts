@@ -90,7 +90,7 @@ export class Card extends Component<ICard> {
     //установка выбранности товара
     set selected(value: boolean) {
         if (!this.button.disabled) {
-            this.button.disabled = value;
+            this.setDisabled(this.button, value);
         }
     }
 }

@@ -96,6 +96,7 @@ events.on('item:addInBasket', (item: Product) => {
     item.selected = true;
     appData.add(item);
     appData.setCustomerData();
+    page.counter = appData.count;
     modal.close();
 });
 
@@ -169,6 +170,7 @@ events.on('contacts:submit', () => {
            events.emit('order:success', result);
            appData.resetBasket();
            appData.resetOrder();
+           page.counter = 0;
        })
        .catch((err) => {
            console.error(err);

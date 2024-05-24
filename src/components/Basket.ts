@@ -48,6 +48,6 @@ export class Basket extends Component<IBasket> {
 
     //блокировка кнопки
     disableButton(value: boolean) {
-        this.button.disabled = value;
+        this.setDisabled(this.button, value); 
     }
 }

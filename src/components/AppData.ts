@@ -31,7 +31,7 @@ export class AppData extends Model<IAppData> {
         this.basket.push(item);
     }
 
-    //удаление товара из корзины
+    // удаление товара из корзины
     remove(id: string) {
         this.basket = this.basket.filter((item) => item.id !== id);
         this.setCustomerData();

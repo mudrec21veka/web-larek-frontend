@@ -21,16 +21,16 @@ export class DeliverForm extends Form<IDeliverForm> {
 
         if (this._card) {
             this._card.addEventListener('click', () => {
-                this._card.classList.add('button_alt-active');
-                this._cash.classList.remove('button_alt-active');
+                this.toggleClass(this._card, 'button_alt-active', true); 
+                this.toggleClass(this._cash, 'button_alt-active', false); 
                 this.onInputChange('payment', 'card')
             })
         };
 
         if (this._cash) {
             this._cash.addEventListener('click', () => {
-                this._cash.classList.add('button_alt-active');
-                this._card.classList.remove('button_alt-active');
+                this.toggleClass(this._cash, 'button_alt-active', true); 
+                this.toggleClass(this._card, 'button_alt-active', false); 
                 this.onInputChange('payment', 'cash')
             });
         }
